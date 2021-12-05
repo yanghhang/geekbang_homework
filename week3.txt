@@ -1,0 +1,74 @@
+47.全排列II：
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        n = nums.size();
+        a = vector<bool>(n,false);
+        sort(nums.begin(), nums.end());
+        recur(nums,0);
+        return ans;
+
+    }
+private:
+    void recur(vector<int>& nums, int pos){
+        if (pos == n){
+            ans.push_back(chosen);
+            return;
+        }
+        for(int i = 0;i<n;i++){
+            //剪枝，到i的时候，i-1应该是刚刚被撤销选择，所以剪枝掉
+           if (i && nums[i]==nums[i-1]&& !a[i - 1]) {
+               continue;
+           }
+            if(!a[i]){
+                chosen.push_back(nums[i]);
+                a[i] = true;
+                recur(nums,pos+1);
+                chosen.pop_back();
+                a[i] = false;
+            }
+        }
+        
+    }
+    int n;
+    vector<bool> a;
+    vector<int> chosen;
+    vector<vector<int>> ans;
+    // vector<int> vis;
+    // vis.resize(nums.size());
+};
+106. 从中序与后序遍历序列构造二叉树
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        this->inorder = inorder;
+        this->postorder = postorder;
+        return build(0,inorder.size()-1,0,postorder.size()-1);
+
+    }
+    TreeNode* build(int i1,int i2,int p1,int p2){
+        if(i1>i2) return nullptr;
+        TreeNode* root = new TreeNode(postorder[p2]);
+        int mid = i1;
+        while(mid <= i2 &&inorder[mid] != root->val) mid++;
+        root->left = build(i1,mid-1,p1,p1+(mid-i1)-1);
+        root->right = build(mid+1,i2,p1+(mid-i1),p2-1);
+        return root;
+
+    }
+
+private:
+    vector<int> inorder;
+    vector<int> postorder;
+};
