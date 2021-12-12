@@ -1,0 +1,82 @@
+538. 把二叉搜索树转换为累加树
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int sum = 0;
+
+    TreeNode* convertBST(TreeNode* root) {
+        if (root != nullptr) {
+            convertBST(root->right);
+            sum += root->val;
+            root->val = sum;
+            convertBST(root->left);
+        }
+        return root;
+    }
+};
+
+130. 被围绕的区域
+class Solution {
+public:
+    void solve(vector<vector<char>>& board) {
+        m = board.size();
+        n = board[0].size();
+        visited = vector<vector<bool>>(m,vector<bool>(n,false));
+        //寻找所有和边界的‘O’相连的连通块，将其标记为true
+        for (int i = 0; i < m; i++) {
+            if (board[i][0] == 'O' && !visited[i][0] ) {
+                q.push({i,0});
+                visited[i][0] =true;
+            }
+            if (board[i][n - 1] == 'O' && !visited[i][n-1]) {
+                q.push({i,n-1});
+                visited[i][n-1] =true;
+            }
+        }
+        for (int i = 0; i < n - 1; i++) {
+            if (board[0][i] == 'O' && !visited[0][i] ) {
+                q.push({0,i});
+                visited[0][i] =true;
+            }
+            if (board[m - 1][i] == 'O' && !visited[m-1][i] ) {
+                q.push({m - 1, i});
+                visited[m-1][i] =true;
+            }
+        }
+        while(!q.empty()){
+            int x = q.front().first;
+            int y = q.front().second;
+            q.pop();
+            for(int k = 0;k<4;k++){
+                int nx = x+dx[k];
+                int ny = y+dy[k];
+                if(nx<0 || nx >=m ||ny<0 || ny>=n) continue;
+                if( board[nx][ny]=='O'&& !visited[nx][ny]){
+                        q.push({nx,ny});
+                        visited[nx][ny]=true;
+                }
+            }
+        }
+        //遍历所有网格,将未标记为true的‘O’修改为“X”
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++){
+                if(!visited[i][j] && board[i][j]=='O') board[i][j] = 'X';
+            }        
+    }
+private:
+    int n,m;
+    vector<vector<bool>> visited;
+    queue<pair<int,int>> q;
+    const int dx[4] = {-1,0,0,1};
+    const int dy[4] = {0,-1,1,0};
+};
