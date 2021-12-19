@@ -1,0 +1,61 @@
+1011.在D天内送达包裹的能力
+
+class Solution {
+public:
+    int shipWithinDays(vector<int>& weights, int days) {
+        int left = 0;
+        int right = 0;
+        for(int weight:weights){
+            left = max(left,weight);
+            right +=weight;
+        }
+        while(left<right){
+            int mid = (left+right) / 2;
+            if(vailed(weights,days,mid)){
+                right = mid;
+            } 
+            else{
+                left = mid+1;
+            }
+        }
+        return right;
+
+    }
+private:
+    bool vailed(vector<int>& weights, int days,int size){
+        int curr = 0;
+        int day = 1;
+        for(int weight:weights){
+            if(curr+weight<=size){
+                curr += weight;
+            }else{
+                curr = weight;
+                day++;
+            }
+        }
+        return day<=days;
+
+    }
+};
+
+154.寻找旋转排序数组中的最小值II
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int low = 0;
+        int high = nums.size() - 1;
+        while (low < high) {
+            int mid = (low + high)/ 2;
+            if (nums[mid] < nums[high]) {
+                high = mid;
+            }
+            else if(nums[mid] > nums[high]) {
+                low = mid + 1;
+            }
+            else {
+                high--;
+            }
+        }
+        return nums[low];
+    }
+};
